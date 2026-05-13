@@ -1,0 +1,19 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Node (in case you add tools later)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Local exported recipe backups
+saifuls-kitchen-*.json
