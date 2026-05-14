@@ -5,17 +5,26 @@
    ============================================ */
 
 const STORAGE_KEY = 'juis-kitchen-recipes-v1';
+const WALLPAPER_STORAGE_KEY = 'juis-kitchen-wallpaper-v1';
 const CATEGORIES = ['All', 'Breakfast', 'Lunch', 'Dinner', 'Dessert', 'Snack', 'Drinks', 'Side'];
+const WALLPAPER_PRESETS = [
+  { id: 'lavender', label: 'Lavender Bloom', file: 'wallpapers/lavender.svg' },
+  { id: 'roses',    label: 'Wild Roses',     file: 'wallpapers/roses.svg' },
+  { id: 'sage',     label: 'Sage Garden',    file: 'wallpapers/sage.svg' },
+  { id: 'lineart',  label: 'Line Art',       file: 'wallpapers/lineart.svg' },
+];
 
 const App = {
   recipes: [],
   activeFilter: 'All',
   editingId: null,
   pendingPhoto: null,
+  wallpaperState: { id: 'lavender', custom: null },
 
   // ============ INIT ============
   init() {
     this.recipes = this.loadRecipes();
+    this.initWallpaper();
     this.renderChips();
     this.render();
     this.attachKeyboard();
@@ -555,6 +564,153 @@ const App = {
     this.toast('Sample recipes added');
   },
 
+  // ============ WALLPAPER ============
+  initWallpaper() {
+    try {
+      const raw = localStorage.getItem(WALLPAPER_STORAGE_KEY);
+      if (raw) {
+        const saved = JSON.parse(raw);
+        if (saved && typeof saved === 'object') {
+          this.wallpaperState = {
+            id: saved.id || 'lavender',
+            custom: saved.custom || null
+          };
+        }
+      }
+    } catch (e) {
+      console.error('Failed to load wallpaper:', e);
+    }
+    this.applyWallpaper();
+  },
+
+  saveWallpaperState() {
+    try {
+      localStorage.setItem(WALLPAPER_STORAGE_KEY, JSON.stringify(this.wallpaperState));
+    } catch (e) {
+      console.error('Failed to save wallpaper:', e);
+      this.toast('⚠️ Wallpaper too large to save — try a smaller image');
+    }
+  },
+
+  applyWallpaper() {
+    const root = document.documentElement;
+    const { id, custom } = this.wallpaperState;
+    let url, size = '240px 240px', repeat = 'repeat', attach = 'scroll', opacity = '0.55';
+
+    if (id === 'none') {
+      url = 'none';
+    } else if (id === 'custom' && custom) {
+      url = `url("${custom}")`;
+      size = 'cover';
+      repeat = 'no-repeat';
+      attach = 'fixed';
+      opacity = '0.42';
+    } else {
+      const preset = WALLPAPER_PRESETS.find(p => p.id === id) || WALLPAPER_PRESETS[0];
+      url = `url('${preset.file}')`;
+    }
+
+    root.style.setProperty('--home-wallpaper', url);
+    root.style.setProperty('--home-wallpaper-size', size);
+    root.style.setProperty('--home-wallpaper-repeat', repeat);
+    root.style.setProperty('--home-wallpaper-attach', attach);
+    root.style.setProperty('--home-wallpaper-opacity', opacity);
+  },
+
+  openWallpaperPicker() {
+    this.closeDropdown();
+    this.renderWallpaperGrid();
+    document.getElementById('wallpaperModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  },
+
+  closeWallpaperPicker() {
+    document.getElementById('wallpaperModal').classList.add('hidden');
+    document.body.style.overflow = '';
+  },
+
+  handleWallpaperBackdrop(e) {
+    if (e.target.id === 'wallpaperModal') this.closeWallpaperPicker();
+  },
+
+  renderWallpaperGrid() {
+    const grid = document.getElementById('wallpaperGrid');
+    const cur = this.wallpaperState.id;
+
+    const presetCards = WALLPAPER_PRESETS.map(p => `
+      <button type="button" class="wallpaper-option ${cur === p.id ? 'active' : ''}" onclick="App.applyWallpaperById('${p.id}')">
+        <div class="wallpaper-preview" style="background-image: url('${p.file}'); background-size: 120px 120px; background-repeat: repeat;"></div>
+        <div class="wallpaper-label">${this.esc(p.label)}</div>
+      </button>
+    `).join('');
+
+    const customCard = this.wallpaperState.custom ? `
+      <button type="button" class="wallpaper-option ${cur === 'custom' ? 'active' : ''}" onclick="App.applyWallpaperById('custom')">
+        <img class="wallpaper-preview-img" src="${this.wallpaperState.custom}" alt="Your wallpaper" />
+        <div class="wallpaper-label">My image</div>
+        <button type="button" class="wallpaper-remove-custom" onclick="event.stopPropagation(); App.removeCustomWallpaper()" aria-label="Remove uploaded image">×</button>
+      </button>
+    ` : '';
+
+    const uploadCard = `
+      <button type="button" class="wallpaper-option wallpaper-option-upload" onclick="document.getElementById('wallpaperFile').click()">
+        <div class="wallpaper-preview-empty">＋</div>
+        <div class="wallpaper-label">Upload image</div>
+      </button>
+    `;
+
+    const noneCard = `
+      <button type="button" class="wallpaper-option ${cur === 'none' ? 'active' : ''}" onclick="App.applyWallpaperById('none')">
+        <div class="wallpaper-preview-empty">∅</div>
+        <div class="wallpaper-label">No wallpaper</div>
+      </button>
+    `;
+
+    grid.innerHTML = presetCards + customCard + uploadCard + noneCard;
+  },
+
+  applyWallpaperById(id) {
+    if (id === 'custom' && !this.wallpaperState.custom) return;
+    this.wallpaperState.id = id;
+    this.saveWallpaperState();
+    this.applyWallpaper();
+    this.renderWallpaperGrid();
+  },
+
+  async handleWallpaperUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      this.toast('Please upload an image file');
+      return;
+    }
+    try {
+      const compressed = await this.compressImage(file);
+      this.wallpaperState.custom = compressed;
+      this.wallpaperState.id = 'custom';
+      this.saveWallpaperState();
+      this.applyWallpaper();
+      this.renderWallpaperGrid();
+      this.toast('Wallpaper updated');
+    } catch (err) {
+      console.error(err);
+      this.toast('Could not load that image');
+    }
+    e.target.value = '';
+  },
+
+  removeCustomWallpaper() {
+    if (!confirm('Remove your uploaded wallpaper?')) return;
+    this.wallpaperState.custom = null;
+    if (this.wallpaperState.id === 'custom') {
+      this.wallpaperState.id = 'lavender';
+    }
+    this.saveWallpaperState();
+    this.applyWallpaper();
+    this.renderWallpaperGrid();
+    this.toast('Custom wallpaper removed');
+  },
+
   // ============ DROPDOWN ============
   toggleMenu(e) {
     e.stopPropagation();
@@ -586,6 +742,8 @@ const App = {
       if (e.key === 'Escape') {
         if (!document.getElementById('modal').classList.contains('hidden')) {
           this.closeModal();
+        } else if (!document.getElementById('wallpaperModal').classList.contains('hidden')) {
+          this.closeWallpaperPicker();
         } else if (!document.getElementById('detailView').classList.contains('hidden')) {
           this.goHome();
         }

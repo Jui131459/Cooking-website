@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240">
+  <defs>
+    <g id="rose">
+      <g fill="#F2BBCC" opacity="0.95">
+        <circle cx="-6" cy="-2" r="5.5"/>
+        <circle cx="6" cy="-2" r="5.5"/>
+        <circle cx="0" cy="-7" r="5.5"/>
+        <circle cx="-5" cy="5" r="5.5"/>
+        <circle cx="5" cy="5" r="5.5"/>
+      </g>
+      <g fill="#E08FA8">
+        <circle cx="-2.5" cy="-1" r="3.5"/>
+        <circle cx="2.5" cy="-1" r="3.5"/>
+        <circle cx="0" cy="2.5" r="3.5"/>
+      </g>
+      <circle r="2" fill="#B85A6E"/>
+    </g>
+    <g id="rosebud">
+      <ellipse rx="4" ry="6" fill="#F2BBCC"/>
+      <ellipse rx="2.5" ry="4" fill="#E08FA8"/>
+    </g>
+    <g id="leafGreen">
+      <path d="M0,0 Q6,-4 13,0 Q6,3.5 0,0 Z" fill="#A8C29A"/>
+      <line x1="0.5" y1="0" x2="12" y2="0" stroke="#7A9B7A" stroke-width="0.5"/>
+    </g>
+    <g id="leafPair">
+      <path d="M0,0 Q-3,-7 -10,-11" stroke="#7A9B7A" stroke-width="0.7" fill="none" stroke-linecap="round"/>
+      <use href="#leafGreen" transform="translate(-4,-5) rotate(-60) scale(0.9)"/>
+      <use href="#leafGreen" transform="translate(-9,-11) rotate(-115) scale(0.75)"/>
+    </g>
+    <g id="sprig">
+      <path d="M0,0 Q4,-8 2,-18 Q-1,-26 3,-32" stroke="#7A9B7A" stroke-width="0.7" fill="none" stroke-linecap="round"/>
+      <use href="#leafGreen" transform="translate(3,-6) rotate(40) scale(0.8)"/>
+      <use href="#leafGreen" transform="translate(1,-16) rotate(-130) scale(0.7)"/>
+      <use href="#leafGreen" transform="translate(3,-26) rotate(60) scale(0.65)"/>
+    </g>
+  </defs>
+
+  <g opacity="0.78">
+    <use href="#rose" transform="translate(48,58) rotate(15)"/>
+    <use href="#rose" transform="translate(178,172) rotate(-20)"/>
+    <use href="#rose" transform="translate(196,42) rotate(40) scale(0.85)"/>
+    <use href="#rose" transform="translate(82,198) rotate(-10) scale(0.9)"/>
+    <use href="#rose" transform="translate(128,96) rotate(30) scale(0.8)"/>
+    <use href="#rose" transform="translate(28,138) rotate(-25) scale(0.8)"/>
+
+    <use href="#rosebud" transform="translate(138,32) rotate(-40)"/>
+    <use href="#rosebud" transform="translate(72,102) rotate(20)"/>
+    <use href="#rosebud" transform="translate(160,140) rotate(-30)"/>
+    <use href="#rosebud" transform="translate(218,205) rotate(15)"/>
+    <use href="#rosebud" transform="translate(20,72) rotate(-15)"/>
+    <use href="#rosebud" transform="translate(60,30) rotate(-50)"/>
+    <use href="#rosebud" transform="translate(200,82) rotate(-25)"/>
+    <use href="#rosebud" transform="translate(214,116) rotate(50)"/>
+
+    <use href="#leafPair" transform="translate(110,80) rotate(40)"/>
+    <use href="#leafPair" transform="translate(152,208) rotate(-30) scale(1.2)"/>
+    <use href="#leafPair" transform="translate(225,150) rotate(60)"/>
+    <use href="#leafPair" transform="translate(15,160) rotate(-60) scale(0.9)"/>
+    <use href="#leafPair" transform="translate(90,140) rotate(110) scale(0.85)"/>
+
+    <use href="#sprig" transform="translate(170,228) rotate(-15)"/>
+    <use href="#sprig" transform="translate(35,95) rotate(150) scale(0.85)"/>
+
+    <use href="#leafGreen" transform="translate(180,55) rotate(-40) scale(0.9)"/>
+    <use href="#leafGreen" transform="translate(60,178) rotate(20)"/>
+    <use href="#leafGreen" transform="translate(120,124) rotate(70) scale(0.8)"/>
+
+    <circle cx="115" cy="160" r="1.8" fill="#F2BBCC"/>
+    <circle cx="55" cy="50" r="1.5" fill="#E08FA8"/>
+    <circle cx="200" cy="225" r="1.5" fill="#F2BBCC"/>
+    <circle cx="225" cy="60" r="1.5" fill="#E08FA8"/>
+    <circle cx="100" cy="18" r="1.2" fill="#F2BBCC"/>
+    <circle cx="12" cy="115" r="1.2" fill="#E08FA8"/>
+    <circle cx="148" cy="180" r="1.4" fill="#F2BBCC"/>
+    <circle cx="190" cy="195" r="1.2" fill="#E08FA8"/>
+  </g>
+</svg>

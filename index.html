@@ -32,6 +32,7 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
           </button>
           <div id="dropdown" class="dropdown hidden">
+            <button onclick="App.openWallpaperPicker()">🌸 Change wallpaper</button>
             <button onclick="App.exportRecipes()">📥 Export recipes (JSON)</button>
             <button onclick="document.getElementById('importFile').click()">📤 Import recipes</button>
             <button onclick="App.loadStarter()">✨ Load sample recipes</button>
@@ -194,6 +195,21 @@
           <button type="submit" class="btn btn-primary">Save recipe</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- ===== WALLPAPER PICKER MODAL ===== -->
+  <div id="wallpaperModal" class="modal hidden" onclick="App.handleWallpaperBackdrop(event)">
+    <div class="modal-content wallpaper-modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Choose a wallpaper</h2>
+        <button class="close-btn" onclick="App.closeWallpaperPicker()" aria-label="Close">×</button>
+      </div>
+      <div class="wallpaper-picker">
+        <p class="wallpaper-picker-intro">Pick a floral pattern or upload your own image. Changes apply only to the home page.</p>
+        <div id="wallpaperGrid" class="wallpaper-grid"></div>
+        <input type="file" id="wallpaperFile" accept="image/*" hidden onchange="App.handleWallpaperUpload(event)" />
+      </div>
     </div>
   </div>
 
